@@ -4,10 +4,10 @@
 
 Python script uses github API to get data for first 2 questions.
 
-Third requires using the command 
+Third question requires using the command 
 
 ```sh
-git log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > /d/q3.csv
+git log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv
 ```
 
-to get the raw data first
+to get the raw data first, then renaming the author's name in the 46th row to e.g "1234567". Python is unable to decode that name.

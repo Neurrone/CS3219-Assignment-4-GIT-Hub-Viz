@@ -1,7 +1,9 @@
-import requests
+import csv
 import datetime
 from  functools import reduce
 import time
+
+import requests
 
 api_url = "https://api.github.com/"
 
@@ -53,12 +55,35 @@ def q2(contributorData):
     
     return additions_per_month, deletions_per_month
 
+def q3(csv_filename):
+    """Returns 2 lists with the daily commits for Jan 2016 for authors who's names start with A-M, and N-Z respectively."""
+    a_m_daily_commits = [0 for n in range(31)]
+    n_z_daily_commits = [0 for n in range(31)]
+    with open(csv_filename, 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            author_name = row[0]
+            commit_time = datetime.datetime.fromtimestamp(int(row[1]))
+            first_letter = author_name[0].upper()
+            if first_letter >= 'A' and first_letter <= 'M':
+                a_m_daily_commits[commit_time.day] += 1
+            elif first_letter >= 'N' and first_letter <= 'Z':
+                n_z_daily_commits[commit_time.day] += 1
+    
+    return a_m_daily_commits, n_z_daily_commits
+
 contributor_data = getContributorData()
 commits_by_author, total = q1(contributor_data)
 print(commits_by_author)
 print("Total:", total)
+
 additions_per_month, deletions_per_month = q2(contributor_data)
 print("sums of additions by all authors , for each month from Jan 2016 to June 2016:")
 print(additions_per_month)
 print("sums of deletions by all authors , for each month from Jan 2016 to June 2016:")
 print(deletions_per_month)
+
+q3_csv_filename = input("Enter path to .csv after running the following command:\ngit log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv\nand renaming the author with special characters to e.g 12345 in 46th row: ")
+a_m_daily_commits, n_z_daily_commits = q3(q3_csv_filename)
+print("Commits for authors with names starting with A-M in Jan 2016:", a_m_daily_commits)
+print("Commits for authors with names starting with N-Z in Jan 2016:", n_z_daily_commits)
