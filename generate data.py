@@ -77,13 +77,33 @@ commits_by_author, total = q1(contributor_data)
 print(commits_by_author)
 print("Total:", total)
 
+with open('data/q1.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['author', 'commits'])
+    for author, commits in commits_by_author.items():
+        writer.writerow([author, commits])
+
 additions_per_month, deletions_per_month = q2(contributor_data)
 print("sums of additions by all authors , for each month from Jan 2016 to June 2016:")
 print(additions_per_month)
 print("sums of deletions by all authors , for each month from Jan 2016 to June 2016:")
 print(deletions_per_month)
 
+with open('data/q2.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['monthIndex', 'additions', 'deletions'])
+    for monthIndex, pair in enumerate(zip(additions_per_month, deletions_per_month)):
+        additions, deletions = pair
+        writer.writerow([monthIndex, additions, deletions])
+
 q3_csv_filename = input("Enter path to .csv after running the following command:\ngit log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv\nand renaming the author with special characters to e.g 12345 in 46th row: ")
 a_m_daily_commits, n_z_daily_commits = q3(q3_csv_filename)
 print("Commits for authors with names starting with A-M in Jan 2016:", a_m_daily_commits)
 print("Commits for authors with names starting with N-Z in Jan 2016:", n_z_daily_commits)
+
+with open('data/q3.csv', 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['dayIndex', 'a_m commits', 'm_z commits'])
+    for dayIndex, pair in enumerate(zip(a_m_daily_commits, n_z_daily_commits)):
+        a_m_commit, n_z_commit = pair
+        writer.writerow([dayIndex, a_m_commit, n_z_commit])
