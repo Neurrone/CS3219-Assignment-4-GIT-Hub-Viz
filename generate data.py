@@ -103,7 +103,7 @@ print("Commits for authors with names starting with N-Z in Jan 2016:", n_z_daily
 
 with open('data/q3.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow(['dayIndex', 'a_m commits', 'm_z commits'])
+    writer.writerow(['dayIndex', 'a_m commits', 'n_z commits'])
     for dayIndex, pair in enumerate(zip(a_m_daily_commits, n_z_daily_commits)):
         a_m_commit, n_z_commit = pair
         writer.writerow([dayIndex, a_m_commit, n_z_commit])
