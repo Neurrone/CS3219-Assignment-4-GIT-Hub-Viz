@@ -96,7 +96,7 @@ with open('data/q2.csv', 'w', newline='') as csvfile:
         additions, deletions = pair
         writer.writerow([monthIndex, additions, deletions])
 
-q3_csv_filename = input("Enter path to .csv after running the following command:\ngit log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv\nand renaming the author with special characters to e.g 12345 in 46th row: ")
+q3_csv_filename = input("Enter path to .csv after running the following command:\ngit log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv\n: ")
 a_m_daily_commits, n_z_daily_commits = q3(q3_csv_filename)
 print("Commits for authors with names starting with A-M in Jan 2016:", a_m_daily_commits)
 print("Commits for authors with names starting with N-Z in Jan 2016:", n_z_daily_commits)

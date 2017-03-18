@@ -10,4 +10,4 @@ Third question requires using the command
 git log --since='1 jan 2016 00:00' --before='1 feb 2016' --pretty=format:'%an, %at' > q3.csv
 ```
 
-to get the raw data first, then renaming the author's name in the 46th row to e.g "1234567". Python is unable to decode that name.
+to get the raw data first.
