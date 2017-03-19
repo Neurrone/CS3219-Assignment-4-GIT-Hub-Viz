@@ -120,8 +120,8 @@ function makePieChart(containerSelector, dataset) {
 
 function makeBarChart(containerSelector, dataset) {
   var margin = {top: 20, right: 50, bottom: 30, left: 20};
-  var width = 960 - margin.left - margin.right;
-  var height = 500 - margin.top - margin.bottom;
+  var width = 480 - margin.left - margin.right;
+  var height = 480 - margin.top - margin.bottom;
 
   var svg = d3.select(containerSelector)
               .append('svg')
