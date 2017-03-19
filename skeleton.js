@@ -29,7 +29,10 @@ function loadQ1Data() {
 	}
 
 	function onSuccess(data) {
-		q1 = data;
+		q1 = data.filter(function(row) {
+			return row.commits > 0;
+		});
+
 		console.log("Loaded q1 data");
 		loadQ2Data();
 	}
