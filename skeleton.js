@@ -5,127 +5,127 @@ let q2;
 let q3;
 
 function csvLoadFailed() {
-	console.warn("Failed to load CSV data");
+  console.warn("Failed to load CSV data");
 }
 
 function readCsv(path, parseRowFunc, onSuccess) {
-	d3.csv(path, parseRowFunc, function(error, data) {
-		if (error) {
-			csvLoadFailed();
-		} else {
-			onSuccess(data);
-		}
-	});
+  d3.csv(path, parseRowFunc, function(error, data) {
+    if (error) {
+      csvLoadFailed();
+    } else {
+      onSuccess(data);
+    }
+  });
 }
 
 // these functions asynchronously loads data from the .csv files
 
 function loadQ1Data() {
-	function parseRow(row) {
-		return {
-			author: row.author,
-			commits: + row.commits
-		};
-	}
+  function parseRow(row) {
+    return {
+      author: row.author,
+      commits: + row.commits
+    };
+  }
 
-	function onSuccess(data) {
-		q1 = data.filter(function(row) {
-			return row.commits > 0;
-		});
+  function onSuccess(data) {
+    q1 = data.filter(function(row) {
+      return row.commits > 0;
+    });
 
-		console.log("Loaded q1 data");
-		loadQ2Data();
-	}
-	readCsv("data/q1.csv", parseRow, onSuccess);
+    console.log("Loaded q1 data");
+    loadQ2Data();
+  }
+  readCsv("data/q1.csv", parseRow, onSuccess);
 }
 
 function loadQ2Data() {
-	function parseRow(row) {
-		return {
-			monthIndex: + row.monthIndex,
-			additions: + row.additions,
-			deletions: + row.deletions
-		};
-	}
+  function parseRow(row) {
+    return {
+      monthIndex: + row.monthIndex,
+      additions: + row.additions,
+      deletions: + row.deletions
+    };
+  }
 
-	function onSuccess(data) {
-		q2 = data;
-		console.log("Loaded q2 data");
-		loadQ3Data();
-	}
-	readCsv("data/q2.csv", parseRow, onSuccess);
+  function onSuccess(data) {
+    q2 = data;
+    console.log("Loaded q2 data");
+    loadQ3Data();
+  }
+  readCsv("data/q2.csv", parseRow, onSuccess);
 }
 
 function loadQ3Data() {
-	function parseRow(row) {
-		return {
-			dayIndex: + row.dayIndex,
-			amCommits: + row['a_m commits'],
-			nzCommits: + row['n_z commits']
-		};
-	}
+  function parseRow(row) {
+    return {
+      dayIndex: + row.dayIndex,
+      amCommits: + row['a_m commits'],
+      nzCommits: + row['n_z commits']
+    };
+  }
 
-	function onSuccess(data) {
-		q3 = data;
-		console.log("Loaded q3 data");
-		onDataLoadingComplete(q1, q2, q3);
-	}
-	readCsv("data/q3.csv", parseRow, onSuccess);
+  function onSuccess(data) {
+    q3 = data;
+    console.log("Loaded q3 data");
+    onDataLoadingComplete(q1, q2, q3);
+  }
+  readCsv("data/q3.csv", parseRow, onSuccess);
 }
 
 function makePieChart(dataset) {
-	var width = 360;
-	var height = 360;
-	var radius = Math.min(width, height) / 2;
-	var colour = d3.scaleOrdinal(d3.schemeCategory20b);
+  var width = 360;
+  var height = 360;
+  var radius = Math.min(width, height) / 2;
+  var colour = d3.scaleOrdinal(d3.schemeCategory20b);
 
-	var svg = d3.select('#chart1')
-				.append('svg')
-				.attr('width', width)
-				.attr('height', height)
-				.append('g')
-				.attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
+  var svg = d3.select('#chart1')
+              .append('svg')
+              .attr('width', width)
+              .attr('height', height)
+              .append('g')
+              .attr('transform', 'translate(' + (width / 2) + ',' + (height / 2) + ')');
 
-	var pie = d3.pie()
-				.value(function(d) { return d.commits; })
-				.sort(null);
+  var pie = d3.pie()
+              .value(function(d) { return d.commits; })
+              .sort(null);
 
-	var path = d3.arc()
-				.innerRadius(0)
-				.outerRadius(radius);
+  var path = d3.arc()
+               .innerRadius(0)
+               .outerRadius(radius);
 
-	var label = d3.arc()
-				.innerRadius(radius - 60)
-				.outerRadius(radius - 60);
+  var label = d3.arc()
+                .innerRadius(radius - 60)
+                .outerRadius(radius - 60);
 
-	var arc = svg.selectAll('.arc')
-				.data(pie(dataset))
-				.enter()
-				.append('g')
-				.attr('class', 'arc');
+  var arc = svg.selectAll('.arc')
+               .data(pie(dataset))
+               .enter()
+               .append('g')
+               .attr('class', 'arc');
 
-	arc.append('path')
-		.attr('d', path)
-		.attr('fill', function(d) { return colour(d.data.author); });
+  arc.append('path')
+     .attr('d', path)
+     .attr('fill', function(d) { return colour(d.data.author); });
 
-	arc.append('text')
-		.attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
-		.text(function(d) { return d.data.author; });
+  arc.append('text')
+     .attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
+     .text(function(d) { return d.data.author; });
 }
 
 // this function is called when all CSVs have been loaded successfully
 function onDataLoadingComplete(q1, q2, q3) {
-	// main logic here
-	// this is the format of the question objects: an array of objects, one per row
-	console.log(q1);
-	console.log(q2);
-	console.log(q3);
+  // main logic here
+  // this is the format of the question objects: an array of objects, one per row
+  console.log(q1);
+  console.log(q2);
+  console.log(q3);
 
-	makePieChart(q1);
+  makePieChart(q1);
 }
 
 function main() {
-	loadQ1Data(); /// starts data loading; on success, this function continues to load other CSVs
+  loadQ1Data(); /// starts data loading; on success, this function continues to load other CSVs
 }
 
 main();
