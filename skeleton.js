@@ -137,9 +137,6 @@ function makeBarChart(containerSelector, dataset) {
   x.domain(dataset.map(function(d) { return d.date; }));
   y.domain([0, d3.max(dataset, function(d) { return d.total; })]).nice();
 
-  var xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat('%b'));
-  var yAxis = d3.axisRight(y).ticks(10, "s");
-
   var stack = d3.stack();
 
   svg.selectAll(".serie")
@@ -154,6 +151,9 @@ function makeBarChart(containerSelector, dataset) {
        .attr("y", function(d) { return y(d[1]); })
        .attr("height", function(d) { return y(d[0]) - y(d[1]); })
        .attr("width", x.bandwidth());
+
+  var xAxis = d3.axisBottom(x).tickFormat(d3.timeFormat('%b'));
+  var yAxis = d3.axisRight(y).ticks(10, "s");
 
   svg.append('g')
        .attr("class", "axis axis--x")
