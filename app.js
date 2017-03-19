@@ -65,9 +65,9 @@ function loadQ2Data() {
 function loadQ3Data() {
   function parseRow(row) {
     return {
-      dayIndex: + row.dayIndex,
-      amCommits: + row['a_m commits'],
-      nzCommits: + row['n_z commits']
+      dayIndex: + row.dayIndex + 1,
+      amCommits: + row['amCommits'],
+      nzCommits: + row['nzCommits']
     };
   }
 
