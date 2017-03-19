@@ -146,15 +146,17 @@ function makeBarChart(containerSelector, dataset) {
 
   var x = d3.scaleBand().rangeRound([0, width]).padding(0.3).align(0.3);
   var y = d3.scaleLinear().rangeRound([height, 0]);
-  var colour = ['#cb2431', '#2cbe4e'];
+  var colour = ['#2cbe4e', '#cb2431'];
 
   x.domain(dataset.map(function(d) { return d.date; }));
   y.domain([0, d3.max(dataset, function(d) { return d.total; })]).nice();
 
   var stack = d3.stack();
 
+  var cats = dataset.columns.slice(1);
+
   svg.selectAll(".serie")
-     .data(stack.keys(dataset.columns.slice(1))(dataset))
+     .data(stack.keys(cats)(dataset))
      .enter().append('g')
        .attr('class', 'serie')
        .style('fill', function(d, i) { return colour[i]; })
@@ -184,6 +186,26 @@ function makeBarChart(containerSelector, dataset) {
        .attr("text-anchor", "start")
        .attr("fill", "#000")
        .text("Lines of code");
+
+  var legend = svg.selectAll(".legend")
+                  .data(cats.slice().reverse())
+                  .enter().append("g")
+                    .attr("class", "legend")
+                    .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+          .attr("x", width - 90)
+          .attr("width", 18)
+          .attr("height", 18)
+          .attr("fill", function(d) { return colour[cats.indexOf(d)] });
+
+  legend.append("text")
+          .attr("x", width - 68)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .attr("text-anchor", "start")
+          .text(function(d) { return d; })
+          .style('font-size', '0.7em');
 }
 
 // this function is called when all CSVs have been loaded successfully
