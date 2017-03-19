@@ -74,10 +74,10 @@ function loadQ3Data() {
 }
 
 function makePieChart(dataset) {
-  var width = 360;
-  var height = 360;
+  var width = 480;
+  var height = 480;
   var radius = Math.min(width, height) / 2;
-  var colour = d3.scaleOrdinal(d3.schemeCategory20b);
+  var colour = d3.scaleOrdinal(d3.schemeCategory20c);
 
   var svg = d3.select('#chart1')
               .append('svg')
@@ -95,8 +95,8 @@ function makePieChart(dataset) {
                .outerRadius(radius);
 
   var label = d3.arc()
-                .innerRadius(radius - 60)
-                .outerRadius(radius - 60);
+                .innerRadius(radius - 50)
+                .outerRadius(radius - 50);
 
   var arc = svg.selectAll('.arc')
                .data(pie(dataset))
@@ -110,7 +110,10 @@ function makePieChart(dataset) {
 
   arc.append('text')
      .attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
-     .text(function(d) { return d.data.author; });
+     .text(function(d) { return d.data.author; })
+     .style('font-size', '0.8em')
+     .attr('dx', '-1em')
+     .attr('dy', '2.5em');
 }
 
 // this function is called when all CSVs have been loaded successfully
