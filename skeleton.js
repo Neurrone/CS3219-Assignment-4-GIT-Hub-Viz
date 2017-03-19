@@ -29,6 +29,10 @@ function loadQ1Data() {
   }
 
   function onSuccess(data) {
+    var total = d3.sum(data, function(row) { return row.commits; });
+    data.forEach(function(row) {
+      row.percentage = row.commits / total;
+    });
     q1 = data.filter(function(row) {
       return row.commits > 0;
     });
@@ -78,7 +82,7 @@ function loadQ3Data() {
 function makePieChart(containerSelector, dataset) {
   var width = 480;
   var height = 480;
-  var radius = Math.min(width, height) / 2;
+  var radius = 0.9 * Math.min(width, height) / 2;
   var colour = d3.scaleOrdinal(d3.schemeCategory20c);
 
   var svg = d3.select(containerSelector)
@@ -100,6 +104,10 @@ function makePieChart(containerSelector, dataset) {
                 .innerRadius(radius - 50)
                 .outerRadius(radius - 50);
 
+  var percentage = d3.arc()
+                     .innerRadius(radius + 13)
+                     .outerRadius(radius + 13);
+
   var arc = svg.selectAll('.arc')
                .data(pie(dataset))
                .enter()
@@ -116,6 +124,12 @@ function makePieChart(containerSelector, dataset) {
      .style('font-size', '0.8em')
      .attr('dx', '-1em')
      .attr('dy', '2.5em');
+
+  arc.append('text')
+     .attr('transform', function(d) { return 'translate(' + percentage.centroid(d) + ')'; })
+     .text(function(d) { return d3.format('.0%')(d.data.percentage); })
+     .style('font-size', '0.8em')
+     .attr('dx', '-1em')
 }
 
 function makeBarChart(containerSelector, dataset) {
