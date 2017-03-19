@@ -80,10 +80,11 @@ function loadQ3Data() {
 }
 
 function makePieChart(containerSelector, dataset) {
-  var width = 480;
+  var margin = 25;
+  var width = 680;
   var height = 480;
-  var radius = 0.9 * Math.min(width, height) / 2;
-  var colour = d3.scaleOrdinal(d3.schemeCategory20c);
+  var radius = Math.min(width, height) / 2 - margin;
+  var colour = d3.scaleOrdinal(d3.schemeCategory20);
 
   var svg = d3.select(containerSelector)
               .append('svg')
@@ -101,12 +102,12 @@ function makePieChart(containerSelector, dataset) {
                .outerRadius(radius);
 
   var label = d3.arc()
-                .innerRadius(radius - 40)
-                .outerRadius(radius - 40);
+                .innerRadius(radius + margin + 10)
+                .outerRadius(radius + margin + 10);
 
   var percentage = d3.arc()
-                     .innerRadius(radius + 15)
-                     .outerRadius(radius + 15);
+                     .innerRadius(radius * 3/4)
+                     .outerRadius(radius * 3/4);
 
   var arc = svg.selectAll('.arc')
                .data(pie(dataset))
@@ -114,26 +115,34 @@ function makePieChart(containerSelector, dataset) {
                .append('g')
                .attr('class', 'arc');
 
+  var arc2 = svg.selectAll('.arc2')
+                .data(pie(dataset))
+                .enter()
+                .append('g')
+                .attr('class', 'arc2');
+
   arc.append('path')
      .attr('d', path)
-     .attr('fill', function(d) { return colour(d.data.author); });
+     .attr('fill', function(d) { return colour(d.data.author); })
+     .style('opacity', .7);
 
-  arc.append('text')
-     .attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
-     .text(function(d) { return d.data.author; })
-     .style('font-size', '0.7em')
-     .attr("text-anchor", "middle");
+  arc2.append('text')
+      .attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
+      .text(function(d) { return d.data.author; })
+      .style('font-size', '0.9em')
+      .attr("text-anchor", "middle");
 
-  arc.append('text')
-     .attr('transform', function(d) { return 'translate(' + percentage.centroid(d) + ')'; })
-     .text(function(d) { return d3.format('.0%')(d.data.percentage); })
-     .style('font-size', '0.8em')
-     .attr("text-anchor", "middle");
+  arc2.append('text')
+      .attr('transform', function(d) { return 'translate(' + percentage.centroid(d) + ')'; })
+      .text(function(d) { return d3.format('.0%')(d.data.percentage); })
+      .style('font-weight', 'bold')
+      // .attr("vector-effect", "non-scaling-stroke")
+      .attr("text-anchor", "middle");
 }
 
 function makeBarChart(containerSelector, dataset) {
   var margin = {top: 20, right: 50, bottom: 30, left: 20};
-  var width = 480 - margin.left - margin.right;
+  var width = 680 - margin.left - margin.right;
   var height = 480 - margin.top - margin.bottom;
 
   var svg = d3.select(containerSelector)
