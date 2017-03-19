@@ -101,12 +101,12 @@ function makePieChart(containerSelector, dataset) {
                .outerRadius(radius);
 
   var label = d3.arc()
-                .innerRadius(radius - 50)
-                .outerRadius(radius - 50);
+                .innerRadius(radius - 40)
+                .outerRadius(radius - 40);
 
   var percentage = d3.arc()
-                     .innerRadius(radius + 13)
-                     .outerRadius(radius + 13);
+                     .innerRadius(radius + 15)
+                     .outerRadius(radius + 15);
 
   var arc = svg.selectAll('.arc')
                .data(pie(dataset))
@@ -121,15 +121,14 @@ function makePieChart(containerSelector, dataset) {
   arc.append('text')
      .attr('transform', function(d) { return 'translate(' + label.centroid(d) + ')'; })
      .text(function(d) { return d.data.author; })
-     .style('font-size', '0.8em')
-     .attr('dx', '-1em')
-     .attr('dy', '2.5em');
+     .style('font-size', '0.7em')
+     .attr("text-anchor", "middle");
 
   arc.append('text')
      .attr('transform', function(d) { return 'translate(' + percentage.centroid(d) + ')'; })
      .text(function(d) { return d3.format('.0%')(d.data.percentage); })
      .style('font-size', '0.8em')
-     .attr('dx', '-1em')
+     .attr("text-anchor", "middle");
 }
 
 function makeBarChart(containerSelector, dataset) {
