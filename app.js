@@ -216,16 +216,138 @@ function makeBarChart(containerSelector, dataset) {
           .style('font-size', '0.7em');
 }
 
+function makeDualBarChart(containerSelector, dataset) {
+  var margin = {top: 20, right: 20, bottom: 35, left: 60};
+  var width = 960 - margin.left - margin.right;
+  var height = 500 - margin.top - margin.bottom;
+  var gap = 0.3;
+
+  var x0 = d3.scaleBand().rangeRound([0, width]);
+  var x1 = d3.scaleBand().rangeRound([0, width]);
+  var y = d3.scaleLinear().range([height, 0]);
+
+  var colour = d3.scaleOrdinal(d3.schemeCategory10);
+
+  var svg = d3.select(containerSelector).append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var data = dataset;
+
+  var verticalGuideScale = d3.scaleLinear()
+    .domain([0, d3.max(data)])
+    .range([height, 0])
+
+  var yAxis = d3.axisLeft(y)
+    .ticks(10)
+  var xAxis = d3.axisBottom(x0)
+    .ticks(data.size)
+
+  var catNames = data.columns.splice(1);
+
+  data.forEach(function(d) {
+    d.cats = catNames.map(function(name) {
+      return {
+        name: name,
+        value: +d[name]
+      };
+    });
+  });
+
+  x0.domain(data.map(function(d) {
+    return d.dayIndex;
+  }));
+
+  var separator = gap * x0.bandwidth();
+
+  x1.domain(catNames).range([0, x0.bandwidth() - separator]);
+  y.domain([0, d3.max(data, function(c) {
+    return d3.max(c.cats, function(d) {
+      return d.value;
+    });
+  })]);
+
+  svg.append("g")
+    .attr("class", "axis axis--x")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+    .append("text")
+    .attr("dx", "1em")
+    .attr("dy", "3em")
+    .attr("fill", "#000")
+    .attr("transform", "translate(" + width/2 + ",0)")
+    .attr("text-anchor", "middle")
+    .text("January");
+
+  svg.append("g")
+    .attr("class", "axis axis--y")
+    .call(yAxis)
+    .append("text")
+    .attr("dy", "-1em")
+    .attr("fill", "#000")
+    .text("Commits");
+
+  var day = svg.selectAll(".day")
+    .data(data)
+    .enter().append("g")
+    .attr("class", "day")
+    .attr("transform", function(d) {
+      return "translate(" + (x0(d.dayIndex) + separator/2) + ",0)";
+    });
+
+  day.selectAll("rect")
+    .data(function(d) {
+      return d.cats;
+    })
+    .enter().append("rect")
+    .attr("width", x1.bandwidth())
+    .attr("x", function(d) {
+      return x1(d.name);
+    })
+    .attr("y", function(d) {
+      return y(d.value);
+    })
+    .attr("height", function(d) {
+      return height - y(d.value);
+    })
+    .style("fill", function(d) {
+      return colour(d.name);
+    });
+
+  var legend = svg.selectAll(".legend")
+    .data(catNames.slice().reverse())
+    .enter().append("g")
+    .attr("class", "legend")
+    .attr("transform", function(d, i) {
+      return "translate(0," + i * 20 + ")";
+    });
+
+  legend.append("rect")
+    .attr("x", width - 18)
+    .attr("width", 18)
+    .attr("height", 18)
+    .style("fill", colour);
+
+  legend.append("text")
+    .attr("x", width - 24)
+    .attr("y", 9)
+    .attr("dy", ".35em")
+    .style("text-anchor", "end")
+    .text(function(d) {
+      return {nzCommits:'Team N-Z', amCommits:'Team A-M'}[d];
+    });
+}
+
 // this function is called when all CSVs have been loaded successfully
 function onDataLoadingComplete(q1, q2, q3) {
   // main logic here
   // this is the format of the question objects: an array of objects, one per row
-  console.log(q1);
-  console.log(q2);
-  console.log(q3);
 
   makePieChart('#chart1', q1);
   makeBarChart('#chart2', q2);
+  makeDualBarChart('#chart3', q3);
 }
 
 function main() {
