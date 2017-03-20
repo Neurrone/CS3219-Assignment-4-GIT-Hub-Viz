@@ -32,8 +32,7 @@ def q1(contributorData):
     return commits_by_author, total_commits
 
 def q2(contributorData):
-    """Returns a dictionary with the number of commits by each author
-    from 1st June 2016 to 1st July 2016, and total commits by everyone in this period."""
+    """Returns 2 lists represent the total additions and deletions from jan-jun 2016."""
     
     def getAdditionsInMonthForContributor(contributorInfo, monthIndex):
         month = monthIndex + 1
